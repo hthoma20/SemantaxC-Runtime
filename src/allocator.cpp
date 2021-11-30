@@ -128,6 +128,13 @@ void memDump() {
     printf("\n");
 }
 
+vector<Collectable*>* getAllocations() {
+    return allocations;
+}
+
+vector<Collectable*>* getRootAllocations() {
+    return &rootAllocations;
+}
 
 
 

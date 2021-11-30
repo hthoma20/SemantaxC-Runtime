@@ -1,18 +1,53 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 
 #include "../src/allocator.h"
 
-
 using namespace std;
 
+
+int currentTestCase;
+
+void printTestFailure(string message) {
+    cout << "Test failure in test case [" << currentTestCase << "]" << endl;
+    cout << "\t" <<  message << endl;
+    exit(1);
+}
+
+void assertAllocated(Collectable* allocation) {
+    if (!count(getAllocations()->begin(), getAllocations()->end(), allocation)) {
+        printTestFailure("Allocation not tracked");
+    }
+}
+
+void assertNotAllocated(Collectable* allocation) {
+    if (count(getAllocations()->begin(), getAllocations()->end(), allocation)) {
+        printTestFailure("Allocation is allocated");
+    }
+}
+
+void assertAllocationsEmpty() {
+    if (getAllocations()->size() != 0) {
+        printTestFailure("Allocations non-empty after test case");
+    }
+
+    if (getRootAllocations()->size() != 0) {
+        printTestFailure("Root allocations non-empty after test case");
+    }
+}
+
 struct Thing : Collectable {
-    public:
     int x;
 };
 
 struct Owner : Collectable {
-    public:
     Thing* thing;
+    int x;
+};
+
+struct Recursive : Collectable {
+    Recursive* pointer;
 };
 
 
@@ -28,54 +63,114 @@ Owner* newOwner(Thing* thing) {
     return owner;
 }
 
+Recursive* newRecursive() {
+    return (Recursive*) gcalloc(sizeof(Recursive), 1);
+}
 
-int main(int argc, char* argv[]) {
+void testSingleNonRootAllocation() {
+    Thing* thing = newThing(5);
 
-    setAutomaticCollection(false);
+    assertAllocated(thing);
+    runGarbageCollector();
+    assertNotAllocated(thing);
+}
 
-    printf("Header: %lu\n", sizeof(GcHeader));
-    printf("Collectable*: %lu\n", sizeof(Collectable*));
+void testSingleRootAllocation() {
+    Thing* thing = newThing(5);
 
+    pushRoot(thing);
+    runGarbageCollector();
+
+    assertAllocated(thing);
+
+    popRoot(1);
+    runGarbageCollector();
+    assertNotAllocated(thing);
+}
+
+void testSingleThingMultipleOwners() {
     Owner* owner1 = newOwner(nullptr);
-    cout << "allocate owner1" << endl;
-    memDump();
-
     Owner* owner2 = newOwner(nullptr);
-    cout << "allocate owner2" << endl;
-    memDump();
-
     Thing* thing = newThing(1);
-    cout << "allocate thing" << endl;
-    memDump();
+
+    assertAllocated(owner1);
+    assertAllocated(owner2);
+    assertAllocated(thing);
 
     owner1->thing = thing;
     owner2->thing = thing;
     
     pushRoot(owner1);
     pushRoot(owner2);
-    cout << "mark roots" << endl;
-    memDump();
+    
 
     runGarbageCollector();
-    cout << "run gc" << endl;
-    memDump();
+    
+    assertAllocated(owner1);
+    assertAllocated(owner2);
+    assertAllocated(thing);
+
+    // pop owner2
+    popRoot(1);  
+
+    runGarbageCollector();
+    
+    // since owner2 is no longer a root, it should be freed
+    // since owner1 points to thing, thing should still be allocated
+    assertNotAllocated(owner2);
+    assertAllocated(owner1);
+    assertAllocated(thing);
+
+    // pop owner1
+    popRoot(1);
+
+    runGarbageCollector();
+
+    // now nothing should point to thing and it should be freed
+    assertNotAllocated(owner1);
+    assertNotAllocated(thing); 
+}
+
+
+void testCyclicAllocation() {
+    Recursive* r1 = newRecursive();
+    Recursive* r2 = newRecursive();
+
+    r1->pointer = r2;
+    r2->pointer = r1;
+
+    pushRoot(r2);
+
+    runGarbageCollector();
+    assertAllocated(r1);
+    assertAllocated(r2);
 
     popRoot(1);
-    cout << "pop root" << endl;
-    memDump();
-
     runGarbageCollector();
-    cout << "run gc" << endl;
-    memDump();
+    assertNotAllocated(r1);
+    assertNotAllocated(r2);
+}
 
-    popRoot(1);
-    cout << "pop root" << endl;
-    memDump();
 
-    runGarbageCollector();
-    cout << "run gc" << endl;
-    memDump();
+
+int main(int argc, char* argv[]) {
+
+    setAutomaticCollection(false);
+
+    vector<void (*)()> testCases = {
+        testSingleNonRootAllocation, testSingleRootAllocation, testSingleThingMultipleOwners,
+        testCyclicAllocation
+    };
+
+    currentTestCase = 0;
+
+    for (auto testCase : testCases) {
+        testCase();
+        assertAllocationsEmpty();
+        currentTestCase++;
+    }
+
+    cout << "All " << testCases.size() << " tests passed." << endl;
 
     finalizeGarbageCollector();
-    malloc(4);
 }

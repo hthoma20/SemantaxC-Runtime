@@ -2,6 +2,7 @@
 #define ALLOCATOR_H
 
 #include <cstdlib>
+#include <vector>
 
 typedef unsigned int uint;
 
@@ -58,6 +59,12 @@ void memDump();
  * runs only when requested
  */
 void setAutomaticCollection(bool autoCollectionEnabled);
+
+/**
+ * Return the allocations, this can be used for assertions during testing
+ */
+std::vector<Collectable*>* getAllocations();
+std::vector<Collectable*>* getRootAllocations();
 
 
 #endif
