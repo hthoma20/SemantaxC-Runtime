@@ -1,7 +1,7 @@
 #ifndef ASSERTION_UTILS_H
 #define ASSERTION_UTILS_H
 
-#include "../src/allocator.h"
+#include "allocator.h"
 
 void printTestFailure(std::string message);
 
