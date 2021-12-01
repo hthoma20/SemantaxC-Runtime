@@ -1,17 +1,32 @@
-gpp_flags = -g
+gpp_flags = -g -Isrc
 valgrind_flags = --leak-check=yes --error-exitcode=1
 
-runtest: buildtest
-	valgrind $(valgrind_flags) ./build/test
+VPATH = src:test
 
-buildtest: allocator.o test/allocator_test.cpp
-	g++ $(gpp_flags) test/allocator_test.cpp build/allocator.o -o build/test
+runtime_headers = allocator.h types.h progcalls.h
+runtime_sources = allocator.cpp types.cpp progcalls.cpp
 
-allocator.o: build src/allocator.cpp src/allocator.h
-	g++ $(gpp_flags) -c src/allocator.cpp -o build/allocator.o
+runtime_objects = allocator.o types.o progcalls.o
 
-build:
-	mkdir build
+test_headers = assertion_utils.h allocator_test.h progcalls_test.h
+test_sources = assertion_utils.cpp allocator_test.cpp progcalls_test.cpp runtime_test.cpp
 
+.DUMMY: runtest
+runtests: tests
+	valgrind $(valgrind_flags) ./tests
+
+tests: $(test_headers) $(test_sources) $(runtime_objects)
+	g++ $(gpp_flags) $(addprefix test/,$(test_sources)) $(runtime_objects) -o tests
+
+progcalls.o: progcalls.cpp progcalls.h allocator.o types.o 
+	g++ $(gpp_flags) -c $< -o progcalls.o
+
+types.o: types.cpp types.h allocator.o 
+	g++ $(gpp_flags) -c $< -o types.o
+
+allocator.o: allocator.cpp allocator.h
+	g++ $(gpp_flags) -c $< -o allocator.o
+
+.DUMMY: clean
 clean:
-	rm -rf build
+	rm -f *.o tests
