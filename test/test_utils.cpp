@@ -1,19 +1,31 @@
 #include <algorithm>
 #include <iostream>
 
-#include "assertion_utils.h"
-#include "../src/allocator.h"
+#include "test_utils.h"
+#include "allocator.h"
 
 using namespace std;
 
-string currentTestCase;
+string currentCaseName;
+int currentCaseIndex;
 
-void setTestCase(string newTestCase) {
-    currentTestCase = newTestCase;
+void runTests(std::string caseName, std::vector<void (*)()> testCases) {
+    currentCaseName = caseName;
+    currentCaseIndex = 0;
+
+    for (auto testCase : testCases) {
+        testCase();
+        assertAllocationsEmpty();
+        currentCaseIndex++;
+    }
+
+    cout << caseName << ":" << endl;
+    cout << "\tAll " << testCases.size() << " tests passed." << endl;
 }
 
+
 void printTestFailure(string message) {
-    cout << "Test failure in test case [" << currentTestCase << "]" << endl;
+    cout << "Test failure in test case {" << currentCaseName << "}[" << currentCaseIndex << "]" << endl;
     cout << "\t" <<  message << endl;
     exit(1);
 }

@@ -1,5 +1,8 @@
-#ifndef ASSERTION_UTILS_H
-#define ASSERTION_UTILS_H
+#ifndef TEST_UTILS_H
+#define TEST_UTILS_H
+
+#include <string>
+#include <vector>
 
 #include "allocator.h"
 
@@ -11,6 +14,6 @@ void assertNotAllocated(Collectable* allocation);
 
 void assertAllocationsEmpty();
 
-void setTestCase(std::string testCase);
+void runTests(std::string caseName, std::vector<void (*)()> testCases);
 
 #endif

@@ -8,8 +8,8 @@ runtime_sources = allocator.cpp types.cpp progcalls.cpp
 
 runtime_objects = allocator.o types.o progcalls.o
 
-test_headers = assertion_utils.h allocator_test.h progcalls_test.h
-test_sources = assertion_utils.cpp allocator_test.cpp progcalls_test.cpp runtime_test.cpp
+test_headers = test_utils.h allocator_test.h progcalls_test.h
+test_sources = test_utils.cpp allocator_test.cpp progcalls_test.cpp runtime_test.cpp
 
 .DUMMY: runtest
 runtests: tests

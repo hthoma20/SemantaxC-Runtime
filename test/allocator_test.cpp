@@ -3,7 +3,7 @@
 
 #include "allocator.h"
 
-#include "assertion_utils.h"
+#include "test_utils.h"
 
 using namespace std;
 
@@ -125,24 +125,8 @@ void testCyclicAllocation() {
 
 
 void testAllocator() {
-
-    setAutomaticCollection(false);
-
-    vector<void (*)()> testCases = {
+    runTests("Allocator tests", {
         testSingleNonRootAllocation, testSingleRootAllocation, testSingleThingMultipleOwners,
         testCyclicAllocation
-    };
-
-    int currentTestCase = 0;
-
-    for (auto testCase : testCases) {
-        setTestCase("Allocator: " + currentTestCase);
-        assertAllocationsEmpty();
-        currentTestCase++;
-    }
-
-    cout << "Allocator tests:" << endl;
-    cout << "\tAll " << testCases.size() << " tests passed." << endl;
-
-    finalizeGarbageCollector();
+    });
 }
