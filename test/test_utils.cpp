@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <string>
 
 #include "test_utils.h"
 #include "allocator.h"
@@ -49,5 +50,11 @@ void assertAllocationsEmpty() {
 
     if (getRootAllocations()->size() != 0) {
         printTestFailure("Root allocations non-empty after test case");
+    }
+}
+
+void assertEqual(int expected, int actual) {
+    if (expected != actual) {
+        printTestFailure("Expected [" + to_string(expected) + "], recieved [" + to_string(actual) + "]");
     }
 }

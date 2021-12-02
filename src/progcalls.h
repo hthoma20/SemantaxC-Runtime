@@ -7,7 +7,7 @@ void* invokefun(Func* fun, void* arg);
 
 void* arrayget(Array* array, Int* index);
 void arrayset(Array* array, Int* index, void* val);
-void* initarray(Int* length, Func* supplier);
+Array* initarray(Int* length, Func* supplier);
 Int* arraylen(Array* array);
 
 

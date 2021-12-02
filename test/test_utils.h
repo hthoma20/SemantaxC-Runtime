@@ -9,10 +9,10 @@
 void printTestFailure(std::string message);
 
 void assertAllocated(Collectable* allocation);
-
 void assertNotAllocated(Collectable* allocation);
-
 void assertAllocationsEmpty();
+
+void assertEqual(int expected, int actual);
 
 void runTests(std::string caseName, std::vector<void (*)()> testCases);
 

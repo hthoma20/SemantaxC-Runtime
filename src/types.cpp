@@ -18,5 +18,6 @@ Bool* new_Bool(bool val) {
 Func* new_Func(void* closure, void* (*fun)(void*, void*)) {
     Func* func = (Func*) gcalloc(sizeof(Func), 1);
     func->closure = closure;
+    func->fun = fun;
     return func;
 }
