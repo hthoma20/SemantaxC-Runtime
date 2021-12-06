@@ -18,6 +18,9 @@ runtests: tests
 tests: $(test_headers) $(test_sources) $(runtime_objects)
 	g++ $(gpp_flags) $(addprefix test/,$(test_sources)) $(runtime_objects) -o tests
 
+.DUMMY: runtime
+runtime: $(runtime_objects)
+
 progcalls.o: progcalls.cpp progcalls.h allocator.o types.o 
 	g++ $(gpp_flags) -c $< -o progcalls.o
 
