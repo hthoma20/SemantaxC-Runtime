@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 #include "types.h"
 
@@ -46,4 +47,9 @@ Array* initarray(Int* length, Func* supplier) {
 
 Int* arraylen(Array* array) {
     return new_Int(array->header.pointers);
+}
+
+void printstring(String* str) {
+    char* rawPointer = (char*) str;
+    printf("%s", rawPointer + sizeof(GcHeader));
 }

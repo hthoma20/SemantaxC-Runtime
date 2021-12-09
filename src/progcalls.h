@@ -10,5 +10,6 @@ void arrayset(Array* array, Int* index, void* val);
 Array* initarray(Int* length, Func* supplier);
 Int* arraylen(Array* array);
 
+void printstring(String* str);
 
 #endif

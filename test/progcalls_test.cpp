@@ -59,10 +59,20 @@ void testInvokefun() {
     runGarbageCollector();
 }
 
+void testPrintstring() {
+    String* str = new_String("hello");
+
+    cout << "printstring test:";
+    printstring(str);
+    cout << endl;
+
+    runGarbageCollector();
+}
+
 void testProgcalls() {
     
     runTests("Progcalls tests", {
-        testInitarray, testInvokefun
+        testInitarray, testInvokefun, testPrintstring
     });
 
 }
