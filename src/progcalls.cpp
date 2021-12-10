@@ -53,3 +53,11 @@ void printstring(String* str) {
     char* rawPointer = (char*) str;
     printf("%s", rawPointer + sizeof(GcHeader));
 }
+
+void printint(Int* n) {
+    printf("%d", n->val);
+}
+
+Int* addint(Int* a, Int* b) {
+    return new_Int(a->val + b->val);
+}

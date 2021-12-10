@@ -69,10 +69,34 @@ void testPrintstring() {
     runGarbageCollector();
 }
 
+void testPrintint() {
+    Int* n = new_Int(1234);
+
+    cout << "printint test:";
+    printint(n);
+    cout << endl;
+
+    runGarbageCollector();
+}
+
+void testAddInt() {
+    Int* a = new_Int(5);
+    Int* b = new_Int(10);
+    pushRoot(a);
+    pushRoot(b);
+
+    assertEqual(15, addint(a, b)->val);
+
+    assertEqual(0, addint(new_Int(2147483647), new_Int(-2147483647))->val);
+
+    popRoot(2);
+    runGarbageCollector();
+}
+
 void testProgcalls() {
     
     runTests("Progcalls tests", {
-        testInitarray, testInvokefun, testPrintstring
+        testInitarray, testInvokefun, testPrintstring, testPrintint, testAddInt
     });
 
 }

@@ -11,5 +11,8 @@ Array* initarray(Int* length, Func* supplier);
 Int* arraylen(Array* array);
 
 void printstring(String* str);
+void printint(Int* n);
+
+Int* addint(Int* a, Int* b);
 
 #endif
