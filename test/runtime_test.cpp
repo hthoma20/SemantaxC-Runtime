@@ -14,7 +14,8 @@ int main(int argc, char* argv[]) {
     setAutomaticCollection(false);
 
     runTests("Full test suite", {
-        testAllocator, testProgcalls
+        testAllocator,
+        testProgcalls
     });
 
     finalizeGarbageCollector();

@@ -40,7 +40,18 @@ void pushRoot(Collectable* Collectable);
 /**
  * Pop the top root objects off of the root stack
  */
-void popRoot(int count);
+void popRoots(int count);
+
+/**
+ * Pop the top root object off of the root stack and return it
+ */
+Collectable* popRoot();
+
+/**
+ * Return the object n-deep into the root stack
+ * getRoot(0) returns the top of the stack
+ */
+Collectable* getRoot(int depth);
 
 /**
  * Print a dump of the current allocated memory

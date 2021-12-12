@@ -54,7 +54,7 @@ void testSingleRootAllocation() {
 
     assertAllocated(thing);
 
-    popRoot(1);
+    popRoots(1);
     runGarbageCollector();
     assertNotAllocated(thing);
 }
@@ -82,7 +82,7 @@ void testSingleThingMultipleOwners() {
     assertAllocated(thing);
 
     // pop owner2
-    popRoot(1);  
+    popRoots(1);  
 
     runGarbageCollector();
     
@@ -93,7 +93,7 @@ void testSingleThingMultipleOwners() {
     assertAllocated(thing);
 
     // pop owner1
-    popRoot(1);
+    popRoots(1);
 
     runGarbageCollector();
 
@@ -116,7 +116,7 @@ void testCyclicAllocation() {
     assertAllocated(r1);
     assertAllocated(r2);
 
-    popRoot(1);
+    popRoots(1);
     runGarbageCollector();
     assertNotAllocated(r1);
     assertNotAllocated(r2);

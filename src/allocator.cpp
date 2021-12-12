@@ -42,7 +42,7 @@ Collectable* gcalloc(size_t size, uint pointers) {
  * of its transivively reachable children
  */
 void markTransitive(Collectable* allocation) {
-    if (allocation->header.marked) {
+    if (!allocation || allocation->header.marked) {
         return;
     }
 
@@ -108,8 +108,21 @@ void pushRoot(Collectable* collectable) {
 /**
  * Pop the top root objects off of the root stack
  */
-void popRoot(int count) {
+void popRoots(int count) {
     rootAllocations.erase(rootAllocations.end()-count, rootAllocations.end());
+}
+
+/**
+ * Pop the top root off the root stack and return it
+ */
+Collectable* popRoot() {
+    Collectable* top = rootAllocations[rootAllocations.size()-1];
+    rootAllocations.pop_back();
+    return top;
+}
+
+Collectable* getRoot(int depth) {
+    return rootAllocations[rootAllocations.size()-1-depth];
 }
 
 void dumpAllocation(Collectable* allocation) {

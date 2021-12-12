@@ -9,13 +9,23 @@ struct Int : Collectable {
     int val;
 };
 
-Int* new_Int(int val);
+/**
+ * Pop:
+ * Push:
+ * 0 - Int*
+ */
+void new_Int(int val);
 
 struct Bool : Collectable {
     bool val;
 };
 
-Bool* new_Bool(bool val);
+/**
+ * Pop:
+ * Push:
+ * 0 - Bool*
+ */
+void new_Bool(bool val);
 
 // An array will be allocated at a size larger than this struct, the memory block
 // will also hold the data for the array. The lenght of the array can be determined
@@ -26,14 +36,25 @@ struct Array : Collectable { };
 // contain the data for the string, encoded in UTF-8
 struct String : Collectable { };
 
-String* new_String(std::string val);
+/**
+ * Pop:
+ * Push:
+ * 0 - String*
+ */
+void new_String(std::string val);
 
 struct Func : Collectable {
-    void* closure;
-    void* (*fun)(void*, void*);
+    Collectable* closure;
+    void (*fun)();
 };
 
-Func* new_Func(void* closure, void* (*fun)(void*, void*));
+/**
+ * Pop:
+ * 0 - void* closure
+ * Push:
+ * 0 - Func*
+ */
+void new_Func(void (*fun)());
 
 
 #endif

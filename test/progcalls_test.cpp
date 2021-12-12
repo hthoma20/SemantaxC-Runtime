@@ -17,19 +17,44 @@ struct arg_initializer : Collectable {
 
 // return the Int* passed in
 // i.e initialize the array with 1,2,3,...n
-void* initializer(void* _closure, void* _arg) {
-    arg_initializer* arg = (arg_initializer*) _arg;
-    return arg->index;
+/**
+ * Pop:
+ * 0 - arg_initializer* arg 
+ * Push:
+ * 0 - Int* index
+ */
+void initializer() {
+    popRoot(); // pop closure
+    arg_initializer* arg = (arg_initializer*) popRoot();
+    pushRoot(arg->index);
 }
 
 void testInitarray() {
-    Array* array = initarray(new_Int(5), new_Func(nullptr, initializer));
-
-    assertEqual(5, arraylen(array)->val);
-
-    for (int i = 0; i < 5; i++) {
-        assertEqual(i, ((Int*) arrayget(array, new_Int(i)))->val);
+    {
+        new_Int(5);
+            { pushRoot(nullptr); }
+        new_Func(initializer);
     }
+    initarray();
+        Array* array = (Array*) getRoot(0); // leave array on the stack for the arraylen arg
+    arraylen();
+    Int* length = (Int*) popRoot();
+    
+    assertEqual(5, length->val);
+
+    pushRoot(array);
+    for (int i = 0; i < 5; i++) {
+        
+        {
+            pushRoot(array);
+            new_Int(i);
+        }
+        arrayget();
+        // the array initilizer should have produced [0, 1, 2, 3, 4]
+        Int* element = (Int*) popRoot();
+        assertEqual(i, element->val);
+    }
+    popRoots(1);
 
     runGarbageCollector();
 }
@@ -38,58 +63,87 @@ struct arg_add4 : Collectable {
     Int* n;
 };
 
-arg_add4* new_arg_add4(int n) {
+/**
+ * Pop:
+ * Push:
+ * 0 - arg_add4*
+ */
+void new_arg_add4(int n) {
     arg_add4* arg = (arg_add4*) gcalloc(sizeof(arg_add4), 1);
-    arg->n = new_Int(n);
-    return arg;
+    new_Int(n);
+    arg->n = (Int*) popRoot();
+    pushRoot(arg);
 }
 
-void* add4(void* _closure, void* _arg) {
-    arg_add4* arg = (arg_add4*) _arg;
-    return new_Int(arg->n->val + 4);
+void add4() {
+    Collectable* closure = popRoot();
+    arg_add4* arg = (arg_add4*) popRoot();
+
+    new_Int(arg->n->val + 4);
 }
 
 void testInvokefun() {
-    Int* val1 = (Int*) invokefun(new_Func(nullptr, add4), new_arg_add4(0));
-    Int* val2 = (Int*) invokefun(new_Func(nullptr, add4), new_arg_add4(6));
 
-    assertEqual(4, val1->val);
-    assertEqual(10, val2->val);
+    {
+        { pushRoot(nullptr); }
+        new_Func(add4);
+        new_arg_add4(0);
+    }
+    invokefun();
+    Int* result = (Int*) popRoot();
+    assertEqual(4, result->val);
+
+    {
+        {
+            pushRoot(nullptr); 
+        }
+        new_Func(add4);
+        new_arg_add4(6);
+    }
+    invokefun();
+    result = (Int*) popRoot();    
+    assertEqual(10, result->val);
 
     runGarbageCollector();
 }
 
 void testPrintstring() {
-    String* str = new_String("hello");
-
+    
     cout << "printstring test:";
-    printstring(str);
+        { new_String("hello"); }
+    printstring();
     cout << endl;
 
     runGarbageCollector();
 }
 
 void testPrintint() {
-    Int* n = new_Int(1234);
-
+    
     cout << "printint test:";
-    printint(n);
+        { new_Int(1234); }
+    printint();
     cout << endl;
 
     runGarbageCollector();
 }
 
 void testAddInt() {
-    Int* a = new_Int(5);
-    Int* b = new_Int(10);
-    pushRoot(a);
-    pushRoot(b);
+    {
+        new_Int(5);
+        new_Int(10);
+    }
+    addint();
+    Int* sum = (Int*) popRoot();
+    assertEqual(15, sum->val);
 
-    assertEqual(15, addint(a, b)->val);
+    {
+        new_Int(2147483647);
+        new_Int(-2147483647);
+    }
+    addint();
+    sum = (Int*) popRoot();
+    assertEqual(0, sum->val);
 
-    assertEqual(0, addint(new_Int(2147483647), new_Int(-2147483647))->val);
-
-    popRoot(2);
     runGarbageCollector();
 }
 
