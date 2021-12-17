@@ -38,3 +38,8 @@ void new_String(string val) {
     pushRoot(str);
 }
 
+void new_Variable() {
+    Variable* var = (Variable*) gcalloc(sizeof(Variable), 1);
+    var->val = nullptr;
+    pushRoot(var);
+}

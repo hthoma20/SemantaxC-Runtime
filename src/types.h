@@ -56,5 +56,16 @@ struct Func : Collectable {
  */
 void new_Func(void (*fun)());
 
+struct Variable : Collectable {
+    Collectable* val;
+};
+
+/**
+ * Pop:
+ * Push:
+ * 0 - Variable*
+ */
+void new_Variable();
+
 
 #endif
