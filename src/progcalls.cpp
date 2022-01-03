@@ -8,8 +8,8 @@ void invokefun() {
     Func* fun = (Func*) popRoot();
 
     {
-        pushRoot(arg);
         pushRoot(fun->closure);
+        pushRoot(arg);
     }
     fun->fun();
 }
