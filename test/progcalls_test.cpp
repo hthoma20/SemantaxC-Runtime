@@ -24,8 +24,8 @@ struct arg_initializer : Collectable {
  * 0 - Int* index
  */
 void initializer() {
-    popRoot(); // pop closure
     arg_initializer* arg = (arg_initializer*) popRoot();
+    popRoot(); // pop closure
     pushRoot(arg->index);
 }
 
@@ -76,8 +76,8 @@ void new_arg_add4(int n) {
 }
 
 void add4() {
-    Collectable* closure = popRoot();
     arg_add4* arg = (arg_add4*) popRoot();
+    Collectable* closure = popRoot();
 
     new_Int(arg->n->val + 4);
 }
