@@ -32,6 +32,22 @@ void new_Bool(bool val);
 // via the number of pointers in the gcHeader
 struct Array : Collectable { };
 
+/**
+ * Pop:
+ * 0 - (size)th element
+ * 1 - (size-1)th element
+ * (size-1) - first element
+ * Push
+ * 0 - Array* with the popped elements
+ */
+void new_Array(int size);
+
+/**
+ * internal function, doesn't follow stack convention
+ * return a pointer to the address of the given index in the given array
+ */
+void** arrayLocation(Array* array, int index);
+
 // Similar to an array, a string will be allocated lager than this struct, it will
 // contain the data for the string, encoded in UTF-8
 struct String : Collectable { };

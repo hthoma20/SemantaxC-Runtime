@@ -14,19 +14,10 @@ void invokefun() {
     fun->fun();
 }
 
-// internal fucnction, doesn't follow stack convention
-void** arrayLocation(Array* array, Int* index) {
-    char* rawPointer = (char*) array;
-    int byteOffset = sizeof(GcHeader) + index->val * sizeof(void*);
-
-    char* rawLocation = rawPointer + byteOffset;
-    return (void**) rawLocation;
-}
-
 void arrayget() {
     Int* index = (Int*) popRoot();
     Array* array = (Array*) popRoot();
-    pushRoot((Collectable*) *arrayLocation(array, index));
+    pushRoot((Collectable*) *arrayLocation(array, index->val));
 }
 
 void arrayset() {
@@ -34,7 +25,7 @@ void arrayset() {
     Int* index = (Int*) popRoot();
     Array* array = (Array*) popRoot();
     
-    *arrayLocation(array, index) = val;
+    *arrayLocation(array, index->val) = val;
 }
 
 struct Arg_initarray : Collectable {
@@ -58,14 +49,6 @@ void initarray() {
     Func* supplier = (Func*) getRoot(0);
     Int* length = (Int*) getRoot(1);
 
-    // initialize array with 0 pointers so that the garbage collector doesn't try to trace
-    // non-relevant pointers
-    Array* array = (Array*) gcalloc(sizeof(Array) + (length->val * sizeof(void*)), 0);
-    pushRoot(array);
-
-
-    // top of stack: array, supplier, length
-
     for (int i = 0; i < length->val; i++) {
             { new_Int(i); }
         new_Arg_initarray();
@@ -74,18 +57,12 @@ void initarray() {
         // invoke wants arg, supplier
         pushRoot(supplier);
         pushRoot(arg);
-        invokefun();
-        Collectable* val = popRoot();
-
-        // arrayset wants val, index, array
-        pushRoot(array);
-        new_Int(i);
-        pushRoot(val);
-        arrayset();
-
-        // mark that now each of the filled elements needs to be traced during GC
-        array->header.pointers = i + 1;
+        invokefun(); // leave this value on top of the stack for new_Array
     }
+
+    // pop all the values and push the array itself
+    new_Array(length->val);
+    Array* array = (Array*) getRoot(0);
 
     popRoots(3); // pop: array, supplier, length
     pushRoot(array);
