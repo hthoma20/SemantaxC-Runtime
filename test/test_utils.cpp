@@ -58,3 +58,9 @@ void assertEqual(int expected, int actual) {
         printTestFailure("Expected [" + to_string(expected) + "], recieved [" + to_string(actual) + "]");
     }
 }
+
+void assertEqual(bool expected, bool actual) {
+    if (expected != actual) {
+        printTestFailure("Expected [" + to_string(expected) + "], recieved [" + to_string(actual) + "]");
+    }
+}

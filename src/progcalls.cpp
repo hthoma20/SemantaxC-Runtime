@@ -91,3 +91,55 @@ void addint() {
 
     new_Int(a->val + b->val);
 }
+
+void negateint() {
+    Int* n = (Int*) popRoot();
+    new_Int(-(n->val));
+}
+
+void gteint() {
+    Int* b = (Int*) popRoot();
+    Int* a = (Int*) popRoot();
+
+    new_Bool(a->val >= b->val);
+}
+
+void gtint() {
+    Int* b = (Int*) popRoot();
+    Int* a = (Int*) popRoot();
+
+    new_Bool(a->val > b->val);
+}
+
+void eqint() {
+    Int* b = (Int*) popRoot();
+    Int* a = (Int*) popRoot();
+
+    new_Bool(a->val == b->val);
+}
+
+void negatebool() {
+    Bool* b = (Bool*) popRoot();
+    new_Bool(!(b->val));
+}
+
+void andbool() {
+    Bool* b = (Bool*) popRoot();
+    Bool* a = (Bool*) popRoot();
+
+    new_Bool(a->val && b->val);
+}
+
+void orbool() {
+    Bool* b = (Bool*) popRoot();
+    Bool* a = (Bool*) popRoot();
+
+    new_Bool(a->val || b->val);
+}
+
+void eqbool() {
+    Bool* b = (Bool*) popRoot();
+    Bool* a = (Bool*) popRoot();
+
+    new_Bool(a->val == b->val);
+}

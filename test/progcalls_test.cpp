@@ -127,7 +127,7 @@ void testPrintint() {
     runGarbageCollector();
 }
 
-void testAddInt() {
+void testAddint() {
     {
         new_Int(5);
         new_Int(10);
@@ -147,10 +147,240 @@ void testAddInt() {
     runGarbageCollector();
 }
 
+void testNegateint() {
+    {
+        new_Int(5);
+    }
+    negateint();
+    Int* n = (Int*) popRoot();
+    assertEqual(-5, n->val);
+
+    {
+        new_Int(-200);
+    }
+    negateint();
+    n = (Int*) popRoot();
+    assertEqual(200, n->val);
+
+    runGarbageCollector();
+}
+
+void testGteint() {
+    {
+        new_Int(5);
+        new_Int(10);
+    }
+    gteint();
+    Bool* result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Int(10);
+        new_Int(5);
+    }
+    gteint();
+    result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    {
+        new_Int(10);
+        new_Int(10);
+    }
+    gteint();
+    result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    runGarbageCollector();
+}
+
+void testGtint() {
+    {
+        new_Int(5);
+        new_Int(10);
+    }
+    gtint();
+    Bool* result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Int(10);
+        new_Int(5);
+    }
+    gtint();
+    result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    {
+        new_Int(10);
+        new_Int(10);
+    }
+    gtint();
+    result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    runGarbageCollector();
+}
+
+void testEqint() {
+    {
+        new_Int(5);
+        new_Int(10);
+    }
+    eqint();
+    Bool* result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Int(10);
+        new_Int(5);
+    }
+    eqint();
+    result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Int(10);
+        new_Int(10);
+    }
+    eqint();
+    result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    runGarbageCollector();
+}
+
+void testNegatebool() {
+    {
+        new_Bool(false);
+    }
+    negatebool();
+    Bool* result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    {
+        new_Bool(true);
+    }
+    negatebool();
+    result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    runGarbageCollector();
+}
+
+void testAndbool() {
+    {
+        new_Bool(false);
+        new_Bool(false);
+    }
+    andbool();
+    Bool* result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Bool(false);
+        new_Bool(true);
+    }
+    andbool();
+    result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Bool(true);
+        new_Bool(false);
+    }
+    andbool();
+    result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Bool(true);
+        new_Bool(true);
+    }
+    andbool();
+    result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    runGarbageCollector();
+}
+
+void testOrbool() {
+    {
+        new_Bool(false);
+        new_Bool(false);
+    }
+    orbool();
+    Bool* result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Bool(false);
+        new_Bool(true);
+    }
+    orbool();
+    result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    {
+        new_Bool(true);
+        new_Bool(false);
+    }
+    orbool();
+    result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    {
+        new_Bool(true);
+        new_Bool(true);
+    }
+    orbool();
+    result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    runGarbageCollector();
+}
+
+void testEqbool() {
+    {
+        new_Bool(false);
+        new_Bool(false);
+    }
+    eqbool();
+    Bool* result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    {
+        new_Bool(false);
+        new_Bool(true);
+    }
+    eqbool();
+    result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Bool(true);
+        new_Bool(false);
+    }
+    eqbool();
+    result = (Bool*) popRoot();
+    assertEqual(false, result->val);
+
+    {
+        new_Bool(true);
+        new_Bool(true);
+    }
+    eqbool();
+    result = (Bool*) popRoot();
+    assertEqual(true, result->val);
+
+    runGarbageCollector();
+}
+
 void testProgcalls() {
     
     runTests("Progcalls tests", {
-        testInitarray, testInvokefun, testPrintstring, testPrintint, testAddInt
+        testInitarray, testInvokefun, testPrintstring, testPrintint, testAddint,
+        testNegateint, testGteint, testGtint, testEqint, testEqint,
+        testNegatebool, testAndbool, testOrbool, testEqbool
     });
 
 }
