@@ -127,6 +127,16 @@ void testPrintint() {
     runGarbageCollector();
 }
 
+void testPrintbool() {
+    
+    cout << "printbool test:";
+        { new_Bool(true); }
+    printbool();
+    cout << endl;
+
+    runGarbageCollector();
+}
+
 void testAddint() {
     {
         new_Int(5);
@@ -378,9 +388,9 @@ void testEqbool() {
 void testProgcalls() {
     
     runTests("Progcalls tests", {
-        testInitarray, testInvokefun, testPrintstring, testPrintint, testAddint,
-        testNegateint, testGteint, testGtint, testEqint, testEqint,
-        testNegatebool, testAndbool, testOrbool, testEqbool
+        testInitarray, testInvokefun, testPrintstring, testPrintint, testPrintbool,
+        testAddint, testNegateint, testGteint, testGtint, testEqint,
+        testEqint, testNegatebool, testAndbool, testOrbool, testEqbool
     });
 
 }

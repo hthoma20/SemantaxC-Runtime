@@ -85,6 +85,16 @@ void printint() {
     printf("%d", n->val);
 }
 
+void printbool() {
+    Bool* b = (Bool*) popRoot();
+    if (b->val) {
+        printf("true");
+    }
+    else {
+        printf("false");
+    }
+}
+
 void addint() {
     Int* b = (Int*) popRoot();
     Int* a = (Int*) popRoot();

@@ -63,6 +63,13 @@ void printint();
 
 /**
  * Pop:
+ * 0 - Bool* n
+ * Push:
+ */
+void printbool();
+
+/**
+ * Pop:
  * 0 - Int* b
  * 1 - Int* a
  * Push:
